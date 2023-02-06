@@ -1,47 +1,49 @@
 package ru.saule289;
 
-import com.codeborne.selenide.CollectionCondition;
-import org.junit.jupiter.api.BeforeEach;
+import com.codeborne.selenide.Condition;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import ru.saule289.data.Locale;
+import ru.saule289.data.Currency;
 
 import java.util.List;
 import java.util.stream.Stream;
 
+import static com.codeborne.selenide.CollectionCondition.texts;
+import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selenide.*;
 
 public class parametrizedTestWithMethodSource {
 
-    @BeforeEach
-    void setup() {
-        open("https://www.flypgs.com/ru");
-    }
 
-
-
-    static Stream<Arguments> differentFieldsForEachTypeOfFlight() {
+    static Stream<Arguments> nameOfCurrencyCorrespondsToChosenCurrency() {
         return Stream.of(
-                Arguments.of(Locale.ENG, List.of("From", "To", "Departure date", "Return day", "Passengers")),
-                Arguments.of(Locale.RU, List.of("Билеты", "Туристические Услуги", "BOLBOL", "НАПИШИТЕ НАМ", "взрослый")),
-                Arguments.of(Locale.ES, List.of("Abflugot", "Zielort", "Abflugdatum", "Rückflugdatum", "взрослый")),
-
+                Arguments.of(Currency.RUB, "Российский рубль"),
+                Arguments.of(Currency.BYN, "Белорусский рубль"),
+                Arguments.of(Currency.KZT, "Казахстанский тенге"),
+                Arguments.of(Currency.AMD, "Армянский драм"),
+                Arguments.of(Currency.KGS, "Киргизский сом"),
+                Arguments.of(Currency.UZS, "Узбекский сум")
         );
     }
-    @MethodSource("differentFieldsForEachTypeOfFlight")
-    @ParameterizedTest(name = "Для типа полета {0} отображаются поля {1}")
+
+    @MethodSource("nameOfCurrencyCorrespondsToChosenCurrency")
+    @ParameterizedTest(name = "Для валюты {0} полное название валюты {1}")
     @Tag("BLOCKER")
-    void typeOfFlightShouldHaveTheFollowingFields(
-           Locale typesOfFlight,
-            List<String> fields
+    void ameOfCurrencyCorrespondsToChosenCurrency(
+            Currency currency,
+            String name
     ) {
-        $(".row").;
-        $$(".search_flight-datepicker-container")
-                .shouldHave(CollectionCondition.texts(fields));
+        open("https://wildberries.ru");
+        $(".simple-menu__link").hover();
+        $("div.j-b-change-currency").$$(".radio-with-text__text")
+                .filterBy(Condition.text(currency.name()))
+                .first()
+                .shouldHave(Condition.text(name));
     }
 
 }
+
 
 
