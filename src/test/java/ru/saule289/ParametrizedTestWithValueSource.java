@@ -9,7 +9,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import static com.codeborne.selenide.Selenide.*;
 
-public class parametrizedTestWithValueSource {
+public class ParametrizedTestWithValueSource {
 
     @BeforeEach
     void setup() {
